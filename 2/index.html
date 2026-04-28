@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+    <style>
+        body { background-color: #000; margin: 0; overflow: hidden; font-family: sans-serif; }
+        #ar-container { display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="ar-container">
+        <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: no;" vr-mode-ui="enabled: false">
+          <a-assets>
+              <video id="arVideo" src="./clip.mp4" preload="auto" loop="true" crossorigin="anonymous" webkit-playsinline playsinline></video>
+              <img id="arPhoto" src="./overlay.png">
+              <audio id="arVoice" src="./voice.mp3" preload="auto"></audio>
+          </a-assets>
+
+          <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+          <a-entity id="target" mindar-image-target="targetIndex: 0">
+              <a-video id="videoEntity" src="#arVideo" width="1" height="0.6" position="0 0 0" visible="false"></a-video>
+              <a-image id="photoEntity" src="#arPhoto" width="1" height="1" position="0 0 0" visible="false"></a-image>
+          </a-entity>
+        </a-scene>
+    </div>
+
+    <script>
+      const PASS = "1234"; // Your Master Password
+      
+      const video = document.querySelector('#arVideo');
+      const voice = document.querySelector('#arVoice');
+      const target = document.querySelector('#target');
+
+      window.addEventListener('load', () => {
+          let entry = prompt("Enter Password:");
+          if (entry === PASS) {
+              document.getElementById('ar-container').style.display = "block";
+              checkFilesAndRun();
+          } else {
+              window.location.href = "https://google.com";
+          }
+      });
+
+      function checkFilesAndRun() {
+          // Detect logic: we try to see which file is active
+          // Note: On GitHub, you just need to ensure the file exists in the folder
+          
+          target.addEventListener("targetFound", () => {
+              // Play video if it exists
+              video.play().catch(() => {}); 
+              // Play voice if it exists
+              voice.play().catch(() => {});
+              
+              // To show a photo instead, we manually toggle visibility
+              // If you upload overlay.png, this becomes visible
+              document.querySelector('#photoEntity').setAttribute('visible', 'true');
+              document.querySelector('#videoEntity').setAttribute('visible', 'true');
+          });
+
+          target.addEventListener("targetLost", () => {
+              video.pause();
+              voice.pause();
+          });
+      }
+    </script>
+</body>
+</html>
