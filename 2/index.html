@@ -14,7 +14,7 @@
     <div id="ar-container">
         <a-scene mindar-image="imageTargetSrc: ./targets.mind; autoStart: true; uiLoading: no;" vr-mode-ui="enabled: false">
           <a-assets>
-              <video id="arVideo" src="./clip.mp4" preload="auto" loop="true" crossorigin="anonymous" webkit-playsinline playsinline></video>
+              <a-video src="#arVideo" width="1" height="0.6" position="0 0 0.1"></a-video>
               <img id="arPhoto" src="./overlay.png">
               <audio id="arVoice" src="./voice.mp3" preload="auto"></audio>
           </a-assets>
